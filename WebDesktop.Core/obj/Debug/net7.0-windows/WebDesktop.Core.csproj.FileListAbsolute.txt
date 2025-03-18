@@ -1,0 +1,15 @@
+C:\geovanny\dev\vida\WebDesktop.Core\obj\Debug\net7.0-windows\WebDesktop.Core.csproj.AssemblyReference.cache
+C:\geovanny\dev\vida\WebDesktop.Core\obj\Debug\net7.0-windows\WebDesktop.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\geovanny\dev\vida\WebDesktop.Core\obj\Debug\net7.0-windows\WebDesktop.Core.AssemblyInfoInputs.cache
+C:\geovanny\dev\vida\WebDesktop.Core\obj\Debug\net7.0-windows\WebDesktop.Core.AssemblyInfo.cs
+C:\geovanny\dev\vida\WebDesktop.Core\obj\Debug\net7.0-windows\WebDesktop.Core.csproj.CoreCompileInputs.cache
+C:\geovanny\dev\vida\WebDesktop.Core\bin\Debug\net7.0-windows\runtimes\win-x86\native\WebView2Loader.dll
+C:\geovanny\dev\vida\WebDesktop.Core\bin\Debug\net7.0-windows\runtimes\win-x64\native\WebView2Loader.dll
+C:\geovanny\dev\vida\WebDesktop.Core\bin\Debug\net7.0-windows\runtimes\win-arm64\native\WebView2Loader.dll
+C:\geovanny\dev\vida\WebDesktop.Core\bin\Debug\net7.0-windows\WebDesktop.Core.deps.json
+C:\geovanny\dev\vida\WebDesktop.Core\bin\Debug\net7.0-windows\WebDesktop.Core.dll
+C:\geovanny\dev\vida\WebDesktop.Core\bin\Debug\net7.0-windows\WebDesktop.Core.pdb
+C:\geovanny\dev\vida\WebDesktop.Core\obj\Debug\net7.0-windows\WebDesktop.Core.dll
+C:\geovanny\dev\vida\WebDesktop.Core\obj\Debug\net7.0-windows\refint\WebDesktop.Core.dll
+C:\geovanny\dev\vida\WebDesktop.Core\obj\Debug\net7.0-windows\WebDesktop.Core.pdb
+C:\geovanny\dev\vida\WebDesktop.Core\obj\Debug\net7.0-windows\ref\WebDesktop.Core.dll
