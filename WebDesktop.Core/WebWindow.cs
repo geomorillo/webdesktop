@@ -9,12 +9,41 @@ namespace WebDesktop.Core
         private readonly WebView2 webView;
         public static CoreWebView2Environment SharedEnvironment { get; private set; }
 
-        public WebWindow(string title = "WebDesktop Application", int width = 800, int height = 600)
+        public class ExternalInvoker : IDisposable
+    {
+        private readonly WebWindow _window;
+        private readonly Dictionary<string, Func<string, Task>> _handlers = new();
+
+        public ExternalInvoker(WebWindow window)
+        {
+            _window = window;
+        }
+
+        public void RegisterHandler(string methodName, Func<string, Task> handler)
+        {
+            _handlers[methodName] = handler;
+        }
+
+        public async Task InvokeDotNetMethodAsync(string methodName, string argsJson)
+        {
+            if (_handlers.TryGetValue(methodName, out var handler))
+            {
+                await handler(argsJson);
+            }
+        }
+
+        public void Dispose() => _handlers.Clear();
+    }
+
+    public ExternalInvoker External { get; private set; }
+
+    public WebWindow(string title = "WebDesktop Application", int width = 800, int height = 600)
         {
             Text = title;
             ClientSize = new Size(width, height);
             
             webView = new WebView2();
+            External = new ExternalInvoker(this);
             webView.Dock = DockStyle.Fill;
             Controls.Add(webView);
 
@@ -53,6 +82,7 @@ namespace WebDesktop.Core
                 WebWindow.SharedEnvironment = await CoreWebView2Environment.CreateAsync(null, null, options);
             }
             await webView.EnsureCoreWebView2Async(WebWindow.SharedEnvironment);
+            webView.CoreWebView2.AddHostObjectToScript("external", External);
 
             // Configure WebView2 settings
             webView.CoreWebView2.Settings.IsScriptEnabled = true;

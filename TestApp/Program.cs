@@ -28,6 +28,10 @@ namespace TestApp
                     {
                         var modal = new ModalWindow("<html><body><h1>Contenido Modal</h1><p>¡Cargado correctamente!</p></body></html>");
                         modal.Owner = window;
+                        modal.Initialized += (s, e) => {
+                            // Execute methods here when modal is initialized
+                            MessageBox.Show("Modal initialized!");
+                        };
                         await modal.InitializeAsync();
                         modal.ShowDialog();
                     }

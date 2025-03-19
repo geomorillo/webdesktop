@@ -24,7 +24,10 @@ namespace TestApp
                 {
                     await NavigateToString(HtmlContent);
                 }
+
+                Initialized?.Invoke(this, EventArgs.Empty);
             }
+
             catch (Exception ex)
             {
                 MessageBox.Show(this, $"Modal initialization failed: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -38,6 +41,7 @@ namespace TestApp
             await Task.CompletedTask;
         }
 
+        public event EventHandler Initialized;
         public virtual string HtmlContent { get; protected set; }
     }
 }
