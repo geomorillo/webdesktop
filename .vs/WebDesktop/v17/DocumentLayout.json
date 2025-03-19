@@ -3,8 +3,8 @@
   "WorkspaceRootPath": "C:\\geovanny\\dev\\vida\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A0A5516F-CF94-4F6B-6308-242CCA1A71A5}|TestApp\\TestApp.csproj|c:\\geovanny\\dev\\vida\\testapp\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A0A5516F-CF94-4F6B-6308-242CCA1A71A5}|TestApp\\TestApp.csproj|solutionrelative:testapp\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{12345678-1234-1234-1234-123456789ABC}|WebDesktop.Core\\WebDesktop.Core.csproj|c:\\geovanny\\dev\\vida\\webdesktop.core\\webwindow.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{12345678-1234-1234-1234-123456789ABC}|WebDesktop.Core\\WebDesktop.Core.csproj|solutionrelative:webdesktop.core\\webwindow.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -151,14 +151,14 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\geovanny\\dev\\vida\\TestApp\\Program.cs",
-              "RelativeDocumentMoniker": "TestApp\\Program.cs",
-              "ToolTip": "C:\\geovanny\\dev\\vida\\TestApp\\Program.cs",
-              "RelativeToolTip": "TestApp\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABkAAABPAAAAAAAAAA==",
+              "Title": "WebWindow.cs",
+              "DocumentMoniker": "C:\\geovanny\\dev\\vida\\WebDesktop.Core\\WebWindow.cs",
+              "RelativeDocumentMoniker": "WebDesktop.Core\\WebWindow.cs",
+              "ToolTip": "C:\\geovanny\\dev\\vida\\WebDesktop.Core\\WebWindow.cs",
+              "RelativeToolTip": "WebDesktop.Core\\WebWindow.cs",
+              "ViewState": "AgIAACcAAAAAAAAAAAAUwDoAAAA0AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-18T13:11:44.975Z",
+              "WhenOpened": "2025-03-19T15:42:49.617Z",
               "EditorCaption": ""
             }
           ]

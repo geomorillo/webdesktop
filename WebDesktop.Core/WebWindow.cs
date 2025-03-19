@@ -7,6 +7,7 @@ namespace WebDesktop.Core
     public class WebWindow : Form
     {
         private readonly WebView2 webView;
+        public static CoreWebView2Environment SharedEnvironment { get; private set; }
 
         public WebWindow(string title = "WebDesktop Application", int width = 800, int height = 600)
         {
@@ -44,20 +45,14 @@ namespace WebDesktop.Core
             parent.DropDownItems.Add(menuItem);
         }
 
-        public async Task InitializeAsync()
+        public virtual async Task InitializeAsync(CoreWebView2EnvironmentOptions options = null)
         {
-            // Verify WebView2 Runtime availability and attempt repair if needed
-
-            // Configure WebView2 environment
-            var options = new CoreWebView2EnvironmentOptions()
-            {
-                Language = "es-ES",
-                AdditionalBrowserArguments = "--disable-features=mojo-local-storage --no-sandbox"
-            };
-
             // Initialize WebView2 environment
-            var env = await CoreWebView2Environment.CreateAsync(null, null, options);
-            await webView.EnsureCoreWebView2Async(env);
+            if (WebWindow.SharedEnvironment == null)
+            {
+                WebWindow.SharedEnvironment = await CoreWebView2Environment.CreateAsync(null, null, options);
+            }
+            await webView.EnsureCoreWebView2Async(WebWindow.SharedEnvironment);
 
             // Configure WebView2 settings
             webView.CoreWebView2.Settings.IsScriptEnabled = true;
@@ -75,10 +70,11 @@ namespace WebDesktop.Core
             WebMessageReceived?.Invoke(this, new WebMessageEventArgs(e.WebMessageAsJson));
         }
 
-        public async Task NavigateToString(string html)
+        public Task NavigateToString(string html)
         {
-            await webView.EnsureCoreWebView2Async(null);
             webView.CoreWebView2.NavigateToString(html);
+            return Task.CompletedTask;
+
         }
 
         public async Task ExecuteScriptAsync(string script)

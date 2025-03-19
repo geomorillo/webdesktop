@@ -1,12 +1,14 @@
-# WebDesktop Framework
+# WebDesktop Hybrid Library/Framework
 
-A lightweight .NET framework for building desktop applications using C# and web technologies (HTML, CSS, and JavaScript) without XAML. This framework provides a seamless bridge between C# backend and web frontend using Microsoft's WebView2 control.
+A .NET integration layer for creating modern desktop applications combining C# backend with WebView2 frontend. Provides both ready-to-use components (framework-style) and extensible base classes (library-style) for advanced scenarios. Built on Microsoft's WebView2 control with automatic rendering surface management.
 
 ## Features
 
-- Create desktop applications using HTML, CSS, and JavaScript
+- Hybrid architecture combining C# backend with WebView2 frontend
 - Powerful C# backend with full access to .NET features
 - Bidirectional communication between C# and JavaScript
+- Dynamic menu system with nested items
+- Modal windows with HTML content support
 - Modern web technologies support
 - No XAML required
 
@@ -19,10 +21,32 @@ A lightweight .NET framework for building desktop applications using C# and web 
 ```csharp
 using WebDesktop.Core;
 
-var window = new WebWindow("My App", 800, 600);
+var window = new WebDesktopForm("My App", 800, 600);
 await window.InitializeAsync();
 await window.NavigateToString("<html><body><h1>Hello World</h1></body></html>");
 Application.Run(window);
+```
+
+## Window Features
+
+### Dynamic Menus
+
+```csharp
+// Add top-level menu
+window.AddMenu("File");
+
+// Add menu item with handler
+var fileMenu = (ToolStripMenuItem)window.MainMenuStrip.Items[0];
+window.AddMenuItem(fileMenu, "Exit", (s, e) => Application.Exit());
+```
+
+### Modal Windows
+
+```csharp
+var modal = new ModalWindow("<html><body><h1>Content</h1></body></html>", "My Modal");
+modal.Owner = parentWindow;
+await modal.InitializeAsync();
+modal.ShowDialog();
 ```
 
 ## JavaScript Bridge
@@ -30,7 +54,7 @@ Application.Run(window);
 Communicate between C# and JavaScript easily:
 
 ```csharp
-var bridge = new JavaScriptBridge(window);
+var bridge = window.CreateJavaScriptBridge();
 await bridge.InvokeJavaScriptMethod("updateUI", "Hello from C#");
 ```
 
