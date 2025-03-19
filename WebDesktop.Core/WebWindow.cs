@@ -16,72 +16,37 @@ namespace WebDesktop.Core
             webView = new WebView2();
             webView.Dock = DockStyle.Fill;
             Controls.Add(webView);
+
         }
 
-        private async Task<bool> RepairWebView2Runtime()
+        /// <summary>
+        /// Adds a top-level menu item to the window
+        /// </summary>
+        public void AddMenu(string text)
         {
-            try
+            if (MainMenuStrip == null)
             {
-                string bootstrapperPath = Path.Combine(Path.GetTempPath(), "MicrosoftEdgeWebview2Setup.exe");
-                using (var client = new HttpClient())
-                {
-                    var response = await client.GetAsync("https://go.microsoft.com/fwlink/p/?LinkId=2124703");
-                    using (var fs = new FileStream(bootstrapperPath, FileMode.Create))
-                    {
-                        await response.Content.CopyToAsync(fs);
-                    }
-                }
+                MainMenuStrip = new MenuStrip();
+                Controls.Add(MainMenuStrip);
+            }
 
-                var process = new System.Diagnostics.Process
-                {
-                    StartInfo = new System.Diagnostics.ProcessStartInfo
-                    {
-                        FileName = bootstrapperPath,
-                        Arguments = "/silent /install",
-                        UseShellExecute = true,
-                        CreateNoWindow = true
-                    }
-                };
+            var menuItem = new ToolStripMenuItem(text);
+            MainMenuStrip.Items.Add(menuItem);
+        }
 
-                process.Start();
-                await process.WaitForExitAsync();
-                return process.ExitCode == 0;
-            }
-            catch
-            {
-                return false;
-            }
-            finally
-            {
-                try
-                {
-                    if (File.Exists(Path.Combine(Path.GetTempPath(), "MicrosoftEdgeWebview2Setup.exe")))
-                    {
-                        File.Delete(Path.Combine(Path.GetTempPath(), "MicrosoftEdgeWebview2Setup.exe"));
-                    }
-                }
-                catch { }
-            }
+        /// <summary>
+        /// Adds a submenu item to a parent menu
+        /// </summary>
+        public void AddMenuItem(ToolStripMenuItem parent, string text, EventHandler onClick)
+        {
+            var menuItem = new ToolStripMenuItem(text);
+            menuItem.Click += onClick;
+            parent.DropDownItems.Add(menuItem);
         }
 
         public async Task InitializeAsync()
         {
             // Verify WebView2 Runtime availability and attempt repair if needed
-            string? browserVersion = CoreWebView2Environment.GetAvailableBrowserVersionString();
-            if (string.IsNullOrEmpty(browserVersion))
-            {
-                bool repaired = await RepairWebView2Runtime();
-                if (!repaired)
-                {
-                    throw new InvalidOperationException("Failed to install WebView2 Runtime. Please install it manually from: https://developer.microsoft.com/en-us/microsoft-edge/webview2/");
-                }
-                // Verify again after repair
-                browserVersion = CoreWebView2Environment.GetAvailableBrowserVersionString();
-                if (string.IsNullOrEmpty(browserVersion))
-                {
-                    throw new InvalidOperationException("WebView2 Runtime installation verification failed");
-                }
-            }
 
             // Configure WebView2 environment
             var options = new CoreWebView2EnvironmentOptions()
@@ -128,6 +93,7 @@ namespace WebDesktop.Core
         {
             return CoreWebView2Environment.GetAvailableBrowserVersionString() ?? "No detectado";
         }
+
     }
 }
 
@@ -138,5 +104,6 @@ public class WebMessageEventArgs : EventArgs
     public WebMessageEventArgs(string message)
     {
         Message = message;
+
     }
 }

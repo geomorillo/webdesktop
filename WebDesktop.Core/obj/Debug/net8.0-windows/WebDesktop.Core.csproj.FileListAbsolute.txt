@@ -13,3 +13,5 @@ C:\geovanny\dev\vida\WebDesktop.Core\obj\Debug\net8.0-windows\WebDesktop.Core.dl
 C:\geovanny\dev\vida\WebDesktop.Core\obj\Debug\net8.0-windows\refint\WebDesktop.Core.dll
 C:\geovanny\dev\vida\WebDesktop.Core\obj\Debug\net8.0-windows\WebDesktop.Core.pdb
 C:\geovanny\dev\vida\WebDesktop.Core\obj\Debug\net8.0-windows\ref\WebDesktop.Core.dll
+C:\geovanny\dev\vida\WebDesktop.Core\obj\Debug\net8.0-windows\WebDesktop.Core.WebWindow.resources
+C:\geovanny\dev\vida\WebDesktop.Core\obj\Debug\net8.0-windows\WebDesktop.Core.csproj.GenerateResource.cache
