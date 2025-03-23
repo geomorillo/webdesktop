@@ -1,13 +1,14 @@
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.WinForms;
 using System.Windows.Forms;
+using WebDesktop.Core.Bridge;
 
 namespace WebDesktop.Core
 {
-    public class WebWindow : Form
+    public class WebWindow : Form, IJSExecutor
     {
         private readonly WebView2 webView;
-        public static CoreWebView2Environment SharedEnvironment { get; private set; }
+        public static CoreWebView2Environment SharedEnvironment { get; set; }
 
         public class ExternalInvoker : IDisposable
     {
@@ -74,12 +75,17 @@ namespace WebDesktop.Core
             parent.DropDownItems.Add(menuItem);
         }
 
-        public virtual async Task InitializeAsync(CoreWebView2EnvironmentOptions options = null)
+        protected virtual async Task<CoreWebView2Environment> CreateEnvironmentAsync(CoreWebView2EnvironmentOptions? options = null)
+        {
+            return await CoreWebView2Environment.CreateAsync(null, null, options);
+        }
+
+        public virtual async Task InitializeAsync(CoreWebView2EnvironmentOptions? options = null)
         {
             // Initialize WebView2 environment
             if (WebWindow.SharedEnvironment == null)
             {
-                WebWindow.SharedEnvironment = await CoreWebView2Environment.CreateAsync(null, null, options);
+                WebWindow.SharedEnvironment = await CreateEnvironmentAsync(options);
             }
             await webView.EnsureCoreWebView2Async(WebWindow.SharedEnvironment);
             webView.CoreWebView2.AddHostObjectToScript("external", External);
@@ -93,21 +99,27 @@ namespace WebDesktop.Core
             webView.CoreWebView2.WebMessageReceived += CoreWebView2_WebMessageReceived;
         }
 
-        public event EventHandler<WebMessageEventArgs>? WebMessageReceived = null!; // Null-forgiving operator for nullable event
+        // Evento para recibir mensajes web
+        protected event EventHandler<WebMessageEventArgs>? WebMessageReceived;
 
         private void CoreWebView2_WebMessageReceived(object? sender, CoreWebView2WebMessageReceivedEventArgs e)
         {
             WebMessageReceived?.Invoke(this, new WebMessageEventArgs(e.WebMessageAsJson));
         }
+        
+        // Método protegido para permitir que las clases derivadas invoquen el evento
+        protected virtual void OnWebMessageReceived(WebMessageEventArgs e)
+        {
+            WebMessageReceived?.Invoke(this, e);
+        }
 
-        public Task NavigateToString(string html)
+        public virtual Task NavigateToString(string html)
         {
             webView.CoreWebView2.NavigateToString(html);
             return Task.CompletedTask;
-
         }
 
-        public async Task ExecuteScriptAsync(string script)
+        public virtual async Task ExecuteScriptAsync(string script)
         {
             if (webView.CoreWebView2 != null)
             {

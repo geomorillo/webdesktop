@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1901.177" />
-  </ItemGroup>
+  <PackageReference Include="Microsoft.JSInterop" Version="8.0.0" />
+</ItemGroup>
 
 </Project>

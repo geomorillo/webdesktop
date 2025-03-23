@@ -9,10 +9,14 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.0" />
     <PackageReference Include="Moq" Version="4.20.69" />
-    <PackageReference Include="xunit" Version="2.5.0" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.0" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2365.46" />
+
+    <PackageReference Include="NUnit" Version="3.13.3" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.5.0" />
+    <PackageReference Include="Microsoft.TestPlatform" Version="17.6.0" />
     <PackageReference Include="Microsoft.JSInterop" Version="8.0.0" />
-    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1901.177" />
-    <ProjectReference Include="..\WebDesktop.Core\WebDesktop.Core.csproj" />
-  </ItemGroup>
+    
+    
+  <ProjectReference Include="..\WebDesktop.Core\WebDesktop.Core.csproj" />
+</ItemGroup>
 </Project>

@@ -35,7 +35,7 @@ namespace TestApp
             }
         }
 
-        public override async Task InitializeAsync(CoreWebView2EnvironmentOptions options = null)
+        public override async Task InitializeAsync(CoreWebView2EnvironmentOptions? options = null)
         {
             // Initialization now handled in OnShown
             await Task.CompletedTask;

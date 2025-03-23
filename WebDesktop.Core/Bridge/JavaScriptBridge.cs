@@ -1,46 +1,50 @@
 using System.Text.Json;
+using Microsoft.JSInterop;
+using Microsoft.Web.WebView2.Core;
 
 namespace WebDesktop.Core.Bridge
 {
     public class JavaScriptBridge
     {
-        private readonly WebWindow window;
+        private readonly IJSExecutor jsExecutor;
 
-        public JavaScriptBridge(WebWindow window)
+        public IJSRuntime JSRuntime { get; }
+
+        public JavaScriptBridge(IJSExecutor jsExecutor, IJSRuntime jsRuntime)
         {
-            this.window = window;
+            this.jsExecutor = jsExecutor;
+            this.JSRuntime = jsRuntime;
         }
 
         public async Task InvokeJavaScriptMethod(string methodName, params object[] args)
         {
-            await window.ExecuteScriptAsync($"{methodName}({JsonSerializer.Serialize(args)});");
+            var script = $"window.{methodName}.apply(null, {JsonSerializer.Serialize(args, new JsonSerializerOptions { WriteIndented = false })});";
+            await JSRuntime.InvokeAsync<object>("eval", default, new object[] { script });
         }
 
         public async Task SetProperty(string propertyPath, object value)
         {
             var serializedValue = JsonSerializer.Serialize(value);
             var script = $"window.{propertyPath} = {serializedValue};";
-            await window.ExecuteScriptAsync(script);
+            await jsExecutor.ExecuteScriptAsync(script);
         }
 
-        public async Task RegisterCallback(string callbackName, Func<object[], Task> handler)
+        public Dictionary<string, Func<string, Task>> Callbacks { get; } = new Dictionary<string, Func<string, Task>>();
+
+        public async Task RegisterCallback(string methodName, Func<string, Task> handler)
         {
-            var script = $$$"""
-                window[`${{{callbackName}}}`] = async (...args) => {{
-                    await window.External.InvokeDotNetMethodAsync(`${{{callbackName}}}`, JSON.stringify(args));
-                }};
-            """;
-            await window.ExecuteScriptAsync(script);
+            Callbacks[methodName] = handler;
+            var script = $$"""
+        window.{{methodName}} = (args) => {
+            window.external.invokeDotNetMethodAsync('{{methodName}}', JSON.stringify(args[0]));
+        };
+    """;
+            await jsExecutor.ExecuteScriptAsync(script);
         }
-
         public async Task HandleEvent(string elementId, string eventName, string handlerName)
         {
-            var script = $"""
-                document.getElementById('{elementId}').addEventListener('{eventName}', 
-                    (e) => window.{handlerName}(e)
-                );
-            """;
-            await window.ExecuteScriptAsync(script);
+            var script = $"document.getElementById('{elementId}').addEventListener('{eventName}', (e) => {{ window.{handlerName}(e); }});";
+            await JSRuntime.InvokeAsync<object>("eval", CancellationToken.None, new object[] { script });
         }
     }
 }
