@@ -15,6 +15,12 @@ namespace WebDesktop.Core
         private readonly List<string> _globalStyles = new();
         private NotifyIcon? _trayIcon;
 
+        public static readonly JsonSerializerOptions JsonOptions = new()
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            WriteIndented = false
+        };
+
         public static CoreWebView2Environment? SharedEnvironment { get; set; }
 
         public sealed class ExternalInvoker : IDisposable
@@ -32,7 +38,7 @@ namespace WebDesktop.Core
                 {
                     return await handler(argsJson);
                 }
-                return JsonSerializer.Serialize(new { error = "Handler no encontrado" });
+                return JsonSerializer.Serialize(new { error = "Handler no encontrado" }, JsonOptions);
             }
 
             public void Dispose()
@@ -273,7 +279,18 @@ namespace WebDesktop.Core
                 return Task.FromResult(JsonSerializer.Serialize(new
                 {
                     result = result.ToString()
-                }));
+                }, JsonOptions));
+            });
+
+            Externo.RegisterHandler("__dialog.selectFolder", (json) =>
+            {
+                using var dialog = new FolderBrowserDialog();
+                var ok = dialog.ShowDialog(this) == DialogResult.OK;
+                return Task.FromResult(JsonSerializer.Serialize(new
+                {
+                    ok,
+                    path = ok ? dialog.SelectedPath : null
+                }, JsonOptions));
             });
 
             Externo.RegisterHandler("__dialog.openFile", (json) =>
@@ -292,7 +309,7 @@ namespace WebDesktop.Core
                     ok,
                     file = ok ? dialog.FileName : null,
                     files = ok ? dialog.FileNames : Array.Empty<string>()
-                }));
+                }, JsonOptions));
             });
 
             Externo.RegisterHandler("__dialog.saveFile", (json) =>
@@ -310,7 +327,7 @@ namespace WebDesktop.Core
                 {
                     ok,
                     file = ok ? dialog.FileName : null
-                }));
+                }, JsonOptions));
             });
 
             Externo.RegisterHandler("__dialog.selectFolder", (json) =>
@@ -321,7 +338,7 @@ namespace WebDesktop.Core
                 {
                     ok,
                     path = ok ? dialog.SelectedPath : null
-                }));
+                }, JsonOptions));
             });
         }
 
@@ -354,12 +371,12 @@ namespace WebDesktop.Core
                     {
                         var result = await Externo.InvokeDotNetMethodAsync(method, args);
                         webView.CoreWebView2?.PostWebMessageAsJson(
-                            JsonSerializer.Serialize(new { type = "result", id, result }));
+                            JsonSerializer.Serialize(new { type = "result", id, result }, JsonOptions));
                     }
                     catch (Exception ex)
                     {
                         webView.CoreWebView2?.PostWebMessageAsJson(
-                            JsonSerializer.Serialize(new { type = "result", id, error = ex.Message }));
+                            JsonSerializer.Serialize(new { type = "result", id, error = ex.Message }, JsonOptions));
                     }
                 }
                 else
