@@ -26,11 +26,11 @@
 
 ## Fase 3: Features para Apps de Negocio
 
-- [ ] 3.1 Soporte offline para assets (scripts/CSS embebidos como recursos, no CDN)
-- [ ] 3.2 API de diálogos nativos (MessageBox, OpenFileDialog, SaveFileDialog desde JS)
-- [ ] 3.3 Sistema de notificaciones (Windows Toast desde C#/JS)
-- [ ] 3.4 Eventos de ciclo de vida (`OnNavigating`, `OnNavigated`, `OnClosing`, `OnBridgeReady`)
-- [ ] 3.5 Minimizar a bandeja (NotifyIcon con menú contextual)
+- [x] 3.1 Soporte offline para assets (CSS/JS globales con `InjectGlobalStyle`/`InjectGlobalScript`, sin CDN)
+- [x] 3.2 API de diálogos nativos (`__dialog.showMessage`, `__dialog.openFile`, `__dialog.saveFile`, `__dialog.selectFolder`)
+- [x] 3.3 Sistema de notificaciones (Windows Toast desde C#/JS)
+- [x] 3.4 Eventos de ciclo de vida (`OnBridgeReady`, `OnNavigating`, `OnNavigated`, `FormClosingEvent`)
+- [x] 3.5 Minimizar a bandeja (`EnableTrayIcon()` con NotifyIcon)
 
 ## Fase 4: Calidad y Testing
 
