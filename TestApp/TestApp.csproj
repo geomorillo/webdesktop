@@ -11,4 +11,8 @@
   <ItemGroup>
     <ProjectReference Include="..\WebDesktop.Core\WebDesktop.Core.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="wwwroot\**\*" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
 </Project>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestor de Tareas</title>
+    <link rel="stylesheet" href="http://app.local/css/app.css">
+</head>
+<body>
+    <h1>Gestor de Tareas</h1>
+
+    <div class="toolbar">
+        <input type="text" id="searchInput" placeholder="Buscar tareas..." oninput="renderList()" />
+        <button onclick="openCreate()">+ Nueva tarea</button>
+        <span class="counter" id="counter"></span>
+    </div>
+
+    <div id="taskList"></div>
+
+    <div class="modal-overlay" id="modal">
+        <div class="modal">
+            <h2 id="modalTitle">Nueva tarea</h2>
+            <label>Titulo</label>
+            <input type="text" id="taskTitle" />
+            <label>Descripcion</label>
+            <textarea id="taskDescription"></textarea>
+            <label>Prioridad</label>
+            <select id="taskPriority">
+                <option value="Low">Low</option>
+                <option value="Medium" selected>Medium</option>
+                <option value="High">High</option>
+            </select>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+                <button class="btn" onclick="saveTask()">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal">
+            <h2>Confirmar</h2>
+            <p id="confirmText">Eliminar esta tarea?</p>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeConfirm()">Cancelar</button>
+                <button class="btn btn-danger" id="confirmBtn">Eliminar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="http://app.local/js/app.js"></script>
+</body>
+</html>

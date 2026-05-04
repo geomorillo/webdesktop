@@ -1,0 +1,33 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f0f2f5; color: #222; padding: 24px; }
+h1 { font-size: 24px; margin-bottom: 20px; color: #1a1a2e; }
+.toolbar { display: flex; gap: 12px; margin-bottom: 20px; align-items: center; flex-wrap: wrap; }
+.toolbar input { flex: 1; min-width: 200px; padding: 8px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; }
+.toolbar button, .btn { background: #0078d4; color: #fff; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 14px; }
+.toolbar button:hover, .btn:hover { background: #106ebe; }
+.btn-sm { padding: 4px 10px; font-size: 12px; }
+.btn-danger { background: #d13438; }.btn-danger:hover { background: #a4262c; }
+.btn-success { background: #0b6a0b; }.btn-success:hover { background: #094509; }
+table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,.1); }
+th, td { padding: 10px 14px; text-align: left; border-bottom: 1px solid #eee; font-size: 14px; }
+th { background: #f8f9fa; font-weight: 600; color: #555; }
+tr:hover { background: #f5f7fa; }
+tr.completed td { text-decoration: line-through; color: #999; }
+.actions { display: flex; gap: 6px; }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+.badge.High { background: #fde7e9; color: #d13438; }
+.badge.Medium { background: #fff3d6; color: #d47a00; }
+.badge.Low { background: #e3f5e3; color: #0b6a0b; }
+.badge.done { background: #d4edda; color: #155724; }
+.modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,.4); align-items: center; justify-content: center; z-index: 1000; }
+.modal-overlay.show { display: flex; }
+.modal { background: #fff; border-radius: 10px; padding: 24px; width: 480px; max-width: 90%; box-shadow: 0 8px 32px rgba(0,0,0,.2); }
+.modal h2 { margin-bottom: 16px; font-size: 18px; }
+.modal label { display: block; font-size: 13px; font-weight: 600; color: #555; margin: 10px 0 4px; }
+.modal input, .modal textarea, .modal select { width: 100%; padding: 8px 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; font-family: inherit; }
+.modal textarea { min-height: 60px; resize: vertical; }
+.modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; }
+.modal-actions button { padding: 8px 20px; border-radius: 6px; border: none; cursor: pointer; font-size: 14px; }
+.modal-actions .btn-cancel { background: #e0e0e0; color: #333; }.modal-actions .btn-cancel:hover { background: #ccc; }
+.empty { text-align: center; padding: 40px; color: #999; }
+.counter { font-size: 13px; color: #888; }

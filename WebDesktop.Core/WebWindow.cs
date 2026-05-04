@@ -459,6 +459,36 @@ namespace WebDesktop.Core
             }
         }
 
+        private string? _assetFolder;
+        private string? _virtualHost;
+
+        public void SetAssetFolder(string folderPath, string virtualHost = "app.local")
+        {
+            if (webView.CoreWebView2 == null)
+                throw new WebDesktopException("Debe llamar a InitializeAsync antes de SetAssetFolder");
+
+            var fullPath = Path.GetFullPath(folderPath);
+            if (!Directory.Exists(fullPath))
+                throw new WebDesktopException($"La carpeta no existe: {fullPath}");
+
+            _assetFolder = fullPath;
+            _virtualHost = virtualHost;
+
+            webView.CoreWebView2.SetVirtualHostNameToFolderMapping(
+                virtualHost,
+                fullPath,
+                CoreWebView2HostResourceAccessKind.Allow);
+        }
+
+        public Task NavigateToAsset(string htmlFile = "index.html")
+        {
+            if (_virtualHost == null)
+                throw new WebDesktopException("Debe llamar a SetAssetFolder antes de NavigateToAsset");
+
+            webView.CoreWebView2.Navigate($"http://{_virtualHost}/{htmlFile}");
+            return Task.CompletedTask;
+        }
+
         public string GetBrowserVersion()
         {
             try

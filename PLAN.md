@@ -32,24 +32,29 @@
 - [x] 3.4 Eventos de ciclo de vida (`OnBridgeReady`, `OnNavigating`, `OnNavigated`, `FormClosingEvent`)
 - [x] 3.5 Minimizar a bandeja (`EnableTrayIcon()` con NotifyIcon)
 
-## Fase 4: Calidad y Testing
+## Fase 4: Assets desde Archivos (DX)
 
-- [ ] 4.1 Tests de integración (WebWindow real, ciclo completo de inicialización)
-- [ ] 4.2 Tests de ExternalInvoker (handlers, casos borde, excepciones)
-- [ ] 4.3 Tests de menús (agregar, remover, habilitar/deshabilitar)
-- [ ] 4.4 Análisis de memoria (fugas en WebView2, ciclos C# ↔ JS)
-- [ ] 4.5 Prueba de carga (ventanas modales anidadas, comunicación intensiva)
+- [x] 4.1 `SetAssetFolder(folder, virtualHost)` — mapea carpeta local a dominio virtual vía `SetVirtualHostNameToFolderMapping`
+- [x] 4.2 `NavigateToAsset(htmlFile)` — carga HTML desde la carpeta de assets (ej: `index.html`)
+- [x] 4.3 Los archivos HTML/CSS/JS se editan por separado con sintaxis completa (no más strings C#)
+- [x] 4.4 La carpeta `wwwroot/` se copia automáticamente al output via `.csproj`
+- [x] 4.5 Ejemplo funcional: gestor de tareas con `index.html` + `css/app.css` + `js/app.js`
 
-## Fase 5: DX y Documentación
+## Fase 5: Calidad y Testing
 
-- [ ] 5.1 Actualizar README (docs bilingües, ejemplos reales de app de negocio)
-- [ ] 5.2 Sample app completa (ej: gestor de tareas CRUD con login y reportes)
-- [ ] 5.3 XML Docs en toda la API pública (`<summary>`, `<param>`, `<returns>`)
-- [ ] 5.4 Versioning semántico (`AssemblyVersion` + `FileVersion` en csproj)
+- [ ] 5.1 Tests de integración (WebWindow real, ciclo completo de inicialización)
+- [ ] 5.2 Tests de ExternalInvoker (handlers, casos borde, excepciones)
+- [ ] 5.3 Tests de menús (agregar, remover, habilitar/deshabilitar)
+- [ ] 5.4 Análisis de memoria (fugas en WebView2, ciclos C# ↔ JS)
+- [ ] 5.5 Prueba de carga (ventanas modales anidadas, comunicación intensiva)
 
-## Fase 6: Preparación para Producción
+## Fase 6: DX y Documentación
 
-- [ ] 6.1 Firma de assemblies (strong name con `.snk`)
-- [ ] 6.2 Análisis de dependencias (evitar DLLs innecesarias como Microsoft.JSInterop)
-- [ ] 6.3 Documentar requisitos WebView2 Runtime (deployment: fix, bootstrapper, evergreen)
-- [ ] 6.4 CI/CD básico (script de build Release + tests + empaquetado)
+- [ ] 6.1 Actualizar README (docs bilingües, ejemplos reales de app de negocio)
+- [ ] 6.2 XML Docs en toda la API pública (`<summary>`, `<param>`, `<returns>`)
+- [ ] 6.3 Versioning semántico (`AssemblyVersion` + `FileVersion` en csproj)
+
+## Fase 7: Preparación para Producción
+
+- [ ] 7.1 Firma de assemblies (strong name con `.snk`)
+- [ ] 7.2 CI/CD básico (script de build Release + tests + empaquetado)
