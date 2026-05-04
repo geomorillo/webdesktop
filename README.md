@@ -1,68 +1,78 @@
-# WebDesktop Hybrid Library/Framework
+# WebDesktop — MVP
 
-A .NET integration layer for creating modern desktop applications combining C# backend with WebView2 frontend. Provides both ready-to-use components (framework-style) and extensible base classes (library-style) for advanced scenarios. Built on Microsoft's WebView2 control with automatic rendering surface management.
+Framework híbrido C# + WebView2 para aplicaciones de escritorio modernas. Sin XAML.
 
-## Features
+## Requisitos
 
-- Hybrid architecture combining C# backend with WebView2 frontend
-- Powerful C# backend with full access to .NET features
-- Bidirectional communication between C# and JavaScript
-- Dynamic menu system with nested items
-- Modal windows with HTML content support
-- Modern web technologies support
-- No XAML required
+- .NET 9.0
+- Microsoft Edge WebView2 Runtime
+- Windows (WinForms)
 
-## Getting Started
-
-1. Create a new .NET Windows Forms application
-2. Add a reference to the WebDesktop.Core project
-3. Create a new window:
+## MVP — Cómo se usa
 
 ```csharp
 using WebDesktop.Core;
+using System.Text.Json;
 
-var window = new WebDesktopForm("My App", 800, 600);
-await window.InitializeAsync();
-await window.NavigateToString("<html><body><h1>Hello World</h1></body></html>");
+var window = new WebWindow("Mi App", 1024, 768);
+
+window.Shown += async (_, _) =>
+{
+    await window.InitializeAsync();
+
+    // Menú básico
+    window.AddMenu("File");
+    var fileMenu = (ToolStripMenuItem)window.MainMenuStrip!.Items[0]!;
+    window.AddMenuItem(fileMenu, "Exit", (_, _) => Application.Exit());
+
+    // Registrar handlers C# invocables desde JS
+    window.Externo.RegisterHandler("saludar", (json) =>
+    {
+        var args = JsonSerializer.Deserialize<JsonElement>(json);
+        var nombre = args.GetProperty("nombre").GetString() ?? "Mundo";
+        return Task.FromResult(
+            JsonSerializer.Serialize(new { mensaje = $"Hola {nombre}!" }));
+    });
+
+    // HTML con comunicación directa a C#
+    await window.NavigateToString(@"
+        <h1>Hola Mundo</h1>
+        <input id='nombreInput' placeholder='Tu nombre' />
+        <button id='btn'>Saludar</button>
+        <p id='output'></p>
+        <script>
+            async function invocar(method, args) {
+                return JSON.parse(await chrome.webview.hostObjects.async
+                    .Externo.InvokeDotNetMethodAsync(method, JSON.stringify(args)));
+            }
+            document.getElementById('btn').onclick = async () => {
+                var r = await invocar('saludar', { nombre: document.getElementById('nombreInput').value });
+                document.getElementById('output').textContent = r.mensaje;
+            };
+        </script>
+    ");
+};
+
 Application.Run(window);
 ```
 
-## Window Features
+## API
 
-### Dynamic Menus
+| Clase | Propósito |
+|-------|-----------|
+| `WebWindow` | Ventana principal con WebView2 embebido |
+| `WebView2Configuration` | Configuración del entorno WebView2 |
+| `JavaScriptBridge` | Helper para invocar JS desde C# |
+| `WebDesktopException` | Excepción base del framework |
 
-```csharp
-// Add top-level menu
-window.AddMenu("File");
+## Proyectos
 
-// Add menu item with handler
-var fileMenu = (ToolStripMenuItem)window.MainMenuStrip.Items[0];
-window.AddMenuItem(fileMenu, "Exit", (s, e) => Application.Exit());
-```
+| Proyecto | Descripción |
+|----------|-------------|
+| `WebDesktop.Core` | Librería core |
+| `TestApp` | App demo / MVP |
+| `WebDesktop.Core.Tests` | Tests unitarios (NUnit) |
 
-### Modal Windows
-
-```csharp
-var modal = new ModalWindow("<html><body><h1>Content</h1></body></html>", "My Modal");
-modal.Owner = parentWindow;
-await modal.InitializeAsync();
-modal.ShowDialog();
-```
-
-## JavaScript Bridge
-
-Communicate between C# and JavaScript easily:
-
-```csharp
-var bridge = window.CreateJavaScriptBridge();
-await bridge.InvokeJavaScriptMethod("updateUI", "Hello from C#");
-```
-
-## Requirements
-
-- .NET 7.0 or later
-- Microsoft Edge WebView2 Runtime
-
-## License
+## Licencia
 
 MIT

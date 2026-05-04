@@ -1,20 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0-windows</TargetFramework>
+    <TargetFramework>net9.0-windows</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.0" />
-    <PackageReference Include="Moq" Version="4.20.69" />
-    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2365.46" />
-
-    <PackageReference Include="NUnit" Version="3.13.3" />
-    <PackageReference Include="NUnit3TestAdapter" Version="4.5.0" />
-    <PackageReference Include="Microsoft.TestPlatform" Version="17.6.0" />
-    <PackageReference Include="Microsoft.JSInterop" Version="8.0.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
+    <PackageReference Include="Moq" Version="4.20.72" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3065.39" />
+    <PackageReference Include="NUnit" Version="4.3.2" />
+    <PackageReference Include="NUnit3TestAdapter" Version="5.0.0" />
+    <PackageReference Include="Microsoft.TestPlatform" Version="17.13.0" />
     
     
   <ProjectReference Include="..\WebDesktop.Core\WebDesktop.Core.csproj" />

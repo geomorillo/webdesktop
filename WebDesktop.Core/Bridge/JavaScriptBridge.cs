@@ -1,6 +1,4 @@
 using System.Text.Json;
-using Microsoft.JSInterop;
-using Microsoft.Web.WebView2.Core;
 
 namespace WebDesktop.Core.Bridge
 {
@@ -8,18 +6,15 @@ namespace WebDesktop.Core.Bridge
     {
         private readonly IJSExecutor jsExecutor;
 
-        public IJSRuntime JSRuntime { get; }
-
-        public JavaScriptBridge(IJSExecutor jsExecutor, IJSRuntime jsRuntime)
+        public JavaScriptBridge(IJSExecutor jsExecutor)
         {
             this.jsExecutor = jsExecutor;
-            this.JSRuntime = jsRuntime;
         }
 
         public async Task InvokeJavaScriptMethod(string methodName, params object[] args)
         {
             var script = $"window.{methodName}.apply(null, {JsonSerializer.Serialize(args, new JsonSerializerOptions { WriteIndented = false })});";
-            await JSRuntime.InvokeAsync<object>("eval", default, new object[] { script });
+            await jsExecutor.ExecuteScriptAsync(script);
         }
 
         public async Task SetProperty(string propertyPath, object value)
@@ -36,15 +31,16 @@ namespace WebDesktop.Core.Bridge
             Callbacks[methodName] = handler;
             var script = $$"""
         window.{{methodName}} = (args) => {
-            window.external.invokeDotNetMethodAsync('{{methodName}}', JSON.stringify(args[0]));
+            window.Externo.InvokeDotNetMethodAsync('{{methodName}}', JSON.stringify(args[0]));
         };
     """;
             await jsExecutor.ExecuteScriptAsync(script);
         }
+
         public async Task HandleEvent(string elementId, string eventName, string handlerName)
         {
             var script = $"document.getElementById('{elementId}').addEventListener('{eventName}', (e) => {{ window.{handlerName}(e); }});";
-            await JSRuntime.InvokeAsync<object>("eval", CancellationToken.None, new object[] { script });
+            await jsExecutor.ExecuteScriptAsync(script);
         }
     }
 }

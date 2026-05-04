@@ -1,50 +1,75 @@
 using WebDesktop.Core;
-using System.Windows.Forms;
+using System.Text.Json;
 
-namespace TestApp
+namespace TestApp;
+
+public static class Program
 {
-    public static class Program
+    [STAThread]
+    public static void Main()
     {
-        [STAThread]
-        public static void Main()
+        Application.EnableVisualStyles();
+        Application.SetCompatibleTextRenderingDefault(false);
+
+        var window = new WebWindow("WebDesktop MVP", 1024, 768);
+
+        window.Shown += async (sender, e) =>
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
-            
-            var window = new WebWindow("Prueba WebDesktop", 1024, 768);
-            
-            // Initialize async after showing the window
-            window.Shown += async (sender, e) => 
+            await window.InitializeAsync();
+
+            window.AddMenu("File");
+            var fileMenu = (ToolStripMenuItem)window.MainMenuStrip!.Items[0]!;
+            window.AddMenuItem(fileMenu, "Exit", (_, _) => Application.Exit());
+
+            window.Externo.RegisterHandler("saludar", (json) =>
             {
-                await window.InitializeAsync();
-                
-                // Add test menu items
-                window.AddMenu("File");
-                var fileMenu = (ToolStripMenuItem)window.MainMenuStrip.Items[0];
-                window.AddMenuItem(fileMenu, "Exit", (s, e) => Application.Exit());
-                window.AddMenuItem(fileMenu, "Nueva Ventana", async (s, e) => {
-                    try
+                var args = JsonSerializer.Deserialize<JsonElement>(json);
+                var nombre = args.GetProperty("nombre").GetString() ?? "Mundo";
+                return Task.FromResult(
+                    JsonSerializer.Serialize(new { mensaje = $"Hola {nombre}! desde C#" }));
+            });
+
+            window.Externo.RegisterHandler("hora", (_) =>
+            {
+                return Task.FromResult(
+                    JsonSerializer.Serialize(new
                     {
-                        var modal = new ModalWindow("<html><body><h1>Contenido Modal</h1><p>¡Cargado correctamente!</p></body></html>");
-                        modal.Owner = window;
-                        modal.Initialized += (s, e) => {
-                            // Execute methods here when modal is initialized
-                            MessageBox.Show("Modal initialized!");
-                        };
-                        await modal.InitializeAsync();
-                        modal.ShowDialog();
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Error al abrir ventana modal: {ex.Message}");
-                    }
-                });
-                window.AddMenuItem(fileMenu, "About", (s, e) => MessageBox.Show("WebDesktop Test App\nVersion 1.0"));
-                await window.NavigateToString($"<h1>¡Funciona correctamente!</h1><p>Versión WebView2: {window.GetBrowserVersion()}</p>");
-            };
-            
-            Application.Run(window);
-        }
+                        hora = DateTime.Now.ToString("HH:mm:ss"),
+                        fecha = DateTime.Now.ToString("dd/MM/yyyy")
+                    }));
+            });
+
+            await window.NavigateToString(@"
+<h1>WebDesktop MVP</h1>
+<p>Framework hibrido C# + WebView2</p>
+
+<div style='margin:20px 0'>
+    <input type='text' id='nombreInput' placeholder='Tu nombre' />
+    <button id='saludarBtn'>Saludar</button>
+    <p id='saludarOutput'></p>
+</div>
+
+<div style='margin:20px 0'>
+    <button id='horaBtn'>Obtener hora desde C#</button>
+    <pre id='horaOutput'></pre>
+</div>
+
+<script>
+    document.getElementById('saludarBtn').onclick = async () => {
+        const nombre = document.getElementById('nombreInput').value;
+        const result = await window.WebDesktop.invoke('saludar', { nombre });
+        document.getElementById('saludarOutput').textContent = JSON.parse(result).mensaje;
+    };
+
+    document.getElementById('horaBtn').onclick = async () => {
+        const result = await window.WebDesktop.invoke('hora');
+        const data = JSON.parse(result);
+        document.getElementById('horaOutput').textContent = `Hora: ${data.hora} | Fecha: ${data.fecha}`;
+    };
+</script>
+");
+        };
+
+        Application.Run(window);
     }
 }
