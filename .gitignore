@@ -16,3 +16,7 @@ obj/
 
 # Local development environment files
 .env
+
+# Windows shell
+desktop.ini
+Thumbs.db
