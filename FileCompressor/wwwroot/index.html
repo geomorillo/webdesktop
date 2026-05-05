@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>File Compressor</title>
+  <link rel="stylesheet" href="http://app.local/css/app.css">
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>File Compressor</h1>
+      <p>Comprime y descomprime archivos ZIP</p>
+    </header>
+
+    <nav class="tabs">
+      <button class="tab active" data-tab="compress">Comprimir</button>
+      <button class="tab" data-tab="decompress">Descomprimir</button>
+      <button class="tab" data-tab="explore">Explorar ZIP</button>
+    </nav>
+
+    <div class="tab-content active" id="tab-compress">
+      <div class="card">
+        <div class="field">
+          <label>Archivo o carpeta a comprimir</label>
+          <div class="input-group">
+            <input type="text" id="compressSource" placeholder="C:\Users\...\archivo.txt" readonly>
+            <button class="btn" onclick="browseCompressSource()">Examinar</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>Destino del ZIP</label>
+          <div class="input-group">
+            <input type="text" id="compressDest" placeholder="C:\Users\...\archivo.zip" readonly>
+            <button class="btn" onclick="browseCompressDest()">Guardar como</button>
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="doCompress()" id="btnCompress">
+          Comprimir
+        </button>
+        <div id="compressResult" class="result"></div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="tab-decompress">
+      <div class="card">
+        <div class="field">
+          <label>Archivo ZIP a descomprimir</label>
+          <div class="input-group">
+            <input type="text" id="decompressSource" placeholder="C:\Users\...\archivo.zip" readonly>
+            <button class="btn" onclick="browseDecompressSource()">Examinar</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>Carpeta de destino</label>
+          <div class="input-group">
+            <input type="text" id="decompressDest" placeholder="C:\Users\...\carpeta" readonly>
+            <button class="btn" onclick="browseDecompressDest()">Seleccionar carpeta</button>
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="doDecompress()" id="btnDecompress">
+          Descomprimir
+        </button>
+        <div id="decompressResult" class="result"></div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="tab-explore">
+      <div class="card">
+        <div class="field">
+          <label>Seleccionar archivo ZIP</label>
+          <div class="input-group">
+            <input type="text" id="exploreZip" placeholder="C:\Users\...\archivo.zip" readonly>
+            <button class="btn" onclick="browseExploreZip()">Examinar</button>
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="doExplore()" id="btnExplore">
+          Explorar
+        </button>
+        <div id="exploreResult" class="result"></div>
+        <div id="exploreTable" style="display:none;">
+          <table>
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Tamaño</th>
+                <th>Comprimido</th>
+                <th>Modificado</th>
+              </tr>
+            </thead>
+            <tbody id="exploreBody"></tbody>
+          </table>
+          <p id="exploreSummary" class="summary"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="http://app.local/js/app.js"></script>
+</body>
+</html>
