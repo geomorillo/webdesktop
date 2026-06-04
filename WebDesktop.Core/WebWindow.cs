@@ -108,11 +108,14 @@ namespace WebDesktop.Core
         {
             Text = title;
             ClientSize = new Size(width, height);
+            BackColor = Color.White;
             _configuration = configuration;
             FormClosing += WebWindow_FormClosing;
 
             webView = new WebView2();
             webView.Dock = DockStyle.Fill;
+            webView.DefaultBackgroundColor = Color.White;
+            webView.Visible = false;
             Controls.Add(webView);
         }
 
@@ -284,6 +287,8 @@ namespace WebDesktop.Core
                 webView.CoreWebView2.Settings.IsScriptEnabled = _configuration?.IsScriptEnabled ?? true;
                 webView.CoreWebView2.Settings.AreDevToolsEnabled = _configuration?.AllowDevTools ?? true;
                 webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = _configuration?.AllowContextMenus ?? true;
+
+                webView.DefaultBackgroundColor = Color.White;
 
                 webView.CoreWebView2.WebMessageReceived += CoreWebView2_WebMessageReceived;
                 webView.CoreWebView2.NavigationStarting += CoreWebView2_NavigationStarting;
@@ -537,7 +542,7 @@ namespace WebDesktop.Core
         /// </summary>
         /// <param name="html">Contenido HTML a mostrar.</param>
         /// <returns>Una tarea que representa la operación.</returns>
-        public virtual Task NavigateToString(string html)
+        public virtual async Task NavigateToString(string html)
         {
             var scriptsBuilder = new StringBuilder();
             foreach (var script in _globalScripts)
@@ -558,8 +563,18 @@ namespace WebDesktop.Core
 </body>
 </html>";
 
+            var tcs = new TaskCompletionSource<byte>();
+            EventHandler<CoreWebView2NavigationCompletedEventArgs>? handler = null;
+            handler = (_, _) =>
+            {
+                webView.CoreWebView2.NavigationCompleted -= handler;
+                webView.Visible = true;
+                tcs.SetResult(0);
+            };
+            webView.CoreWebView2.NavigationCompleted += handler;
+
             webView.CoreWebView2.NavigateToString(fullHtml);
-            return Task.CompletedTask;
+            await tcs.Task;
         }
 
         /// <summary>
@@ -609,13 +624,23 @@ namespace WebDesktop.Core
         /// </summary>
         /// <param name="htmlFile">Nombre del archivo HTML (predeterminado: "index.html").</param>
         /// <exception cref="WebDesktopException">Si no se ha llamado a <see cref="SetAssetFolder"/> primero.</exception>
-        public Task NavigateToAsset(string htmlFile = "index.html")
+        public async Task NavigateToAsset(string htmlFile = "index.html")
         {
             if (_virtualHost == null)
                 throw new WebDesktopException("Debe llamar a SetAssetFolder antes de NavigateToAsset");
 
+            var tcs = new TaskCompletionSource<byte>();
+            EventHandler<CoreWebView2NavigationCompletedEventArgs>? handler = null;
+            handler = (_, _) =>
+            {
+                webView.CoreWebView2.NavigationCompleted -= handler;
+                webView.Visible = true;
+                tcs.SetResult(0);
+            };
+            webView.CoreWebView2.NavigationCompleted += handler;
+
             webView.CoreWebView2.Navigate($"http://{_virtualHost}/{htmlFile}");
-            return Task.CompletedTask;
+            await tcs.Task;
         }
 
         /// <summary>
