@@ -1,4 +1,4 @@
-# WebDesktop — Plan de Desarrollo a Producción
+# WebDesktop — Plan de Desarrollo
 
 > Framework interno · .NET 9 · Apps de negocio
 > Prioridades: MVP funcional > Estabilidad > DX > Arquitectura
@@ -40,21 +40,9 @@
 - [x] 4.4 La carpeta `wwwroot/` se copia automáticamente al output via `.csproj`
 - [x] 4.5 Ejemplo funcional: gestor de tareas con `index.html` + `css/app.css` + `js/app.js`
 
-## Fase 5: Calidad y Testing
 
-- [ ] 5.1 Tests de integración (WebWindow real, ciclo completo de inicialización)
-- [ ] 5.2 Tests de ExternalInvoker (handlers, casos borde, excepciones)
-- [ ] 5.3 Tests de menús (agregar, remover, habilitar/deshabilitar)
-- [ ] 5.4 Análisis de memoria (fugas en WebView2, ciclos C# ↔ JS)
-- [ ] 5.5 Prueba de carga (ventanas modales anidadas, comunicación intensiva)
+## Fase 5: DX y Documentación
 
-## Fase 6: DX y Documentación
-
-- [ ] 6.1 Actualizar README (docs bilingües, ejemplos reales de app de negocio)
-- [ ] 6.2 XML Docs en toda la API pública (`<summary>`, `<param>`, `<returns>`)
-- [ ] 6.3 Versioning semántico (`AssemblyVersion` + `FileVersion` en csproj)
-
-## Fase 7: Preparación para Producción
-
-- [ ] 7.1 Firma de assemblies (strong name con `.snk`)
-- [ ] 7.2 CI/CD básico (script de build Release + tests + empaquetado)
+- [x] 6.1 Actualizar README (docs bilingües, ejemplos reales de app de negocio)
+- [x] 6.2 XML Docs en toda la API pública (`<summary>`, `<param>`, `<returns>`)
+- [x] 6.3 Versioning semántico (`AssemblyVersion` + `FileVersion` en csproj)
