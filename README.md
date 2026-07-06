@@ -23,12 +23,6 @@ WebDesktop is a .NET framework for building Windows desktop applications using w
 
 ## Installation
 
-### Via NuGet
-
-```bash
-dotnet add package WebDesktop.Core
-```
-
 ### From source
 
 Clone the repository and build:
