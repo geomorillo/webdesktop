@@ -1,202 +1,223 @@
 # WebDesktop
 
-> **Framework híbrido C# + WebView2 para aplicaciones de escritorio Windows modernas.**  
-> Sin XAML. Sin Electron. Sin Node.
+WebDesktop is a .NET framework for building Windows desktop applications using web technologies (HTML, CSS, and JavaScript). It wraps the WebView2 control and provides a bidirectional communication bridge between C# and JavaScript.
 
-[![.NET](https://img.shields.io/badge/.NET-9.0-512BD4)](https://dotnet.microsoft.com/)
-![Windows](https://img.shields.io/badge/Windows-WinForms-0078D6)
-![WebView2](https://img.shields.io/badge/WebView2-✓-brightgreen)
+## Features
 
----
+- Full-screen WebView2 window with native Windows Forms integration
+- Bidirectional C# to JavaScript communication bridge
+- Native dialog support (message boxes, file open/save, folder selection)
+- Virtual host mapping for serving local static files
+- Global script and style injection
+- System tray icon support
+- Customizable WebView2 environment configuration
+- Shared WebView2 environment across windows
+- Menu bar integration
 
-## ✨ Features
+## Requirements
 
-- **Sin XAML** — toda la UI en HTML + CSS + JS
-- **Comunicación bidireccional** C# ↔ JavaScript nativa, sin bridge intermedio
-- **Diálogos nativos** desde JS: MessageBox, OpenFile, SaveFile, FolderBrowser
-- **Assets locales** — sirve archivos desde el sistema de archivos sin servidor HTTP
-- **Menús** de ventana y **bandeja del sistema** desde C#
-- **Un solo Runtime** — WebView2 compartido entre todas las ventanas
+- Windows 10 or later (or Windows Server 2019 or later)
+- [WebView2 Runtime](https://developer.microsoft.com/en-us/microsoft-edge/webview2/) (Evergreen Runtime recommended)
+- .NET 9.0 SDK or later
+- Visual Studio 2022 (recommended) or any compatible IDE
 
----
+## Installation
 
-## 📦 Instalación
+### Via NuGet
 
 ```bash
-dotnet add reference WebDesktop.Core/WebDesktop.Core.csproj
+dotnet add package WebDesktop.Core
 ```
 
-Requiere .NET 9.0 y [Microsoft Edge WebView2 Runtime](https://developer.microsoft.com/en-us/microsoft-edge/webview2/).
+### From source
 
----
+Clone the repository and build:
 
-## 🚀 Uso
+```bash
+git clone https://github.com/yourusername/webdesktop.git
+cd webdesktop
+dotnet build
+```
+
+## Quick Start
 
 ```csharp
 using WebDesktop.Core;
 
-var window = new WebWindow("Mi App", 1024, 768);
-
-window.Shown += async (_, _) =>
+class Program
 {
-    await window.InitializeAsync();
-
-    // Handler C# invocable desde JavaScript
-    window.Externo.RegisterHandler("saludar", (json) =>
+    [STAThread]
+    static void Main()
     {
-        var args = JsonSerializer.Deserialize<JsonElement>(json);
-        var nombre = args.GetProperty("nombre").GetString() ?? "Mundo";
-        return Task.FromResult(
-            JsonSerializer.Serialize(new { mensaje = $"Hola {nombre}!" }));
-    });
+        Application.EnableVisualStyles();
+        Application.SetCompatibleTextRenderingDefault(false);
 
-    await window.NavigateToString(@"
-        <h1>Hola Mundo</h1>
-        <input id='nombreInput' placeholder='Tu nombre' />
-        <button id='btn'>Saludar</button>
-        <p id='output'></p>
-        <script>
-            document.getElementById('btn').onclick = async () => {
-                var r = await window.WebDesktop.invoke('saludar', { nombre: document.getElementById('nombreInput').value });
-                document.getElementById('output').textContent = r.mensaje;
-            };
-        </script>
-    ");
-};
+        var window = new WebWindow("My App", 1024, 768);
 
-Application.Run(window);
+        window.Shown += async (_, _) =>
+        {
+            await window.InitializeAsync();
+
+            // Register a C# handler callable from JavaScript
+            window.Externo.RegisterHandler("greet", (json) =>
+            {
+                var name = json;
+                return Task.FromResult(System.Text.Json.JsonSerializer.Serialize(
+                    new { message = $"Hello, {name}!" }));
+            });
+
+            // Serve local files from wwwroot folder
+            window.SetAssetFolder("wwwroot");
+            await window.NavigateToAsset("index.html");
+        };
+
+        Application.Run(window);
+    }
+}
 ```
 
----
+From your HTML, call C# methods using:
 
-## 🧱 ¿Por qué WebDesktop?
-
-| Alternativa | Problema |
-|-------------|----------|
-| **WPF / WinForms** | Boilerplate excesivo (XAML, INotifyPropertyChanged, DataTemplates, IValueConverter) para una app LOB simple |
-| **Electron** | 150 MB+ por app, consume 500 MB de RAM, usa Node y Chromium completos |
-| **MAUI** | Multiplataforma forzado cuando solo necesitas Windows, tooling aún inmaduro |
-| **Blazor Hybrid** | Dependencia de ASP.NET Core, generación de código, curva de aprendizaje |
-
-**WebDesktop** da justo lo necesario: una ventana con WebView2, puente de comunicación, diálogos nativos y assets locales. Nada más.
-
----
-
-## 🏗️ Arquitectura
-
-```
-┌─────────────────────────────────────────────┐
-│  WebWindow (Form + WebView2)                 │
-│  ┌─────────────────────────────────────────┐ │
-│  │  HTML / CSS / JS  (UI)                  │ │
-│  │  window.WebDesktop.invoke(method, args) │ │
-│  │      ↕ chrome.webview.postMessage       │ │
-│  ├─────────────────────────────────────────┤ │
-│  │  ExternalInvoker  (Handlers C#)         │ │
-│  │  RegisterHandler → ConcurrentDictionary │ │
-│  ├─────────────────────────────────────────┤ │
-│  │  Built-in: MessageBox, OpenFile,        │ │
-│  │           SaveFile, FolderBrowser        │ │
-│  └─────────────────────────────────────────┘ │
-│  ↑ IJSExecutor  ←  JavaScriptBridge (C#→JS)  │
-└─────────────────────────────────────────────┘
-```
-
-Cada llamada JS → C# usa un sistema request/response con IDs, thread-safe vía `ConcurrentDictionary`.
-
----
-
-## 📚 API
-
-| Clase | Propósito |
-|-------|-----------|
-| `WebWindow` | Ventana principal con WebView2 embebido |
-| `WebView2Configuration` | Configuración del entorno WebView2 |
-| `ExternalInvoker` | Registro de handlers C# invocables desde JS |
-| `JavaScriptBridge` | Helper para invocar JS desde C# |
-| `WebDesktopException` | Excepción base del framework |
-
-### WebWindow
-
-| Método | Descripción |
-|--------|-------------|
-| `InitializeAsync()` | Inicializa WebView2 (obligatorio antes de navegar) |
-| `NavigateToString(html)` | Navega a HTML inline con estilos/scripts inyectados |
-| `AddMenu(text)` | Agrega menú a la barra de menú |
-| `AddMenuItem(parent, text, onClick)` | Agrega elemento a un menú |
-| `InjectGlobalScript(script)` | Inyecta JS en toda página HTML |
-| `InjectGlobalStyle(css)` | Inyecta CSS en toda página HTML |
-| `EnableTrayIcon(text, iconFile?)` | Habilita bandeja del sistema |
-| `SetAssetFolder(folder, virtualHost?)` | Mapea carpeta local a host virtual |
-| `NavigateToAsset(htmlFile?)` | Navega a HTML desde carpeta de assets |
-| `ExecuteScriptAsync(script)` | Ejecuta JS en el WebView2 |
-| `GetBrowserVersion()` | Versión del runtime WebView2 |
-
-| Evento | Descripción |
-|--------|-------------|
-| `OnBridgeReady` | El puente JS `window.WebDesktop.invoke` está listo |
-| `WebMessageReceived` | Mensaje JS no procesado recibido |
-| `OnNavigating` / `OnNavigated` | Inicio / fin de navegación |
-| `FormClosingEvent` | Ventana por cerrarse (cancelable) |
-
----
-
-## 💡 Ejemplos
-
-### Assets locales
-```csharp
-window.SetAssetFolder("wwwroot", "app.local");
-await window.NavigateToAsset("index.html");
-```
-
-### Configuración personalizada
-```csharp
-var config = new WebView2Configuration
-{
-    Language = "es",
-    AllowDevTools = false,
-    UserDataFolder = "my-app-data"
-};
-var window = new WebWindow(config, "App", 1024, 768);
-```
-
-### Diálogos nativos desde JS
 ```javascript
-await window.WebDesktop.invoke('__dialog.showMessage', {
-    text: '¿Guardar cambios?',
-    buttons: 'YesNo',
-    icon: 'Question'
-});
+const result = await window.WebDesktop.invoke("greet", "World");
 ```
 
----
-
-## 🗂️ Estructura del proyecto
+## Project Structure
 
 ```
 WebDesktop/
-├── WebDesktop.Core/          ← Librería core
-│   ├── WebWindow.cs
-│   ├── WebView2Configuration.cs
-│   ├── WebDesktopException.cs
-│   └── Bridge/
-│       ├── IJSExecutor.cs
-│       └── JavaScriptBridge.cs
-├── TestApp/                  ← App demo: gestor de tareas SQLite
-├── FileCompressor/           ← App demo: compresor ZIP
-└── WebDesktop.Core.Tests/    ← Tests unitarios (NUnit)
+├── WebDesktop.Core/              # Core framework library
+│   ├── Bridge/
+│   │   ├── IJSExecutor.cs        # Interface for JavaScript execution
+│   │   └── JavaScriptBridge.cs   # C# to JS communication bridge
+│   ├── WebWindow.cs              # Main window with WebView2 integration
+│   ├── WebView2Configuration.cs  # WebView2 environment configuration
+│   └── WebDesktopException.cs    # Custom exception type
+├── WebDesktop.Core.Tests/        # Unit tests (NUnit + Moq)
+├── FileCompressor/               # Example: file compression application
+│   ├── Services/
+│   │   ├── CompressionService.cs
+│   │   ├── FileInfoService.cs
+│   │   └── ResponseHelper.cs
+│   └── wwwroot/                  # Static frontend files
+├── TestApp/                      # Example: task manager application
+│   └── wwwroot/                  # Static frontend files
+└── WebDesktop.sln                # Visual Studio solution file
 ```
 
----
+## Usage
 
-## 🧪 Tests
+### Creating a window
+
+```csharp
+// Default configuration
+var window = new WebWindow("Title", 800, 600);
+
+// With custom WebView2 configuration
+var config = new WebView2Configuration
+{
+    AllowDevTools = false,
+    IsScriptEnabled = true,
+    UserDataFolder = "./webview-data"
+};
+var window = new WebWindow(config, "Title", 800, 600);
+```
+
+### Communication bridge
+
+**From C# to JavaScript:**
+
+```csharp
+// Execute any JavaScript
+await window.ExecuteScriptAsync("alert('Hello from C#!');");
+```
+
+**From JavaScript to C#:**
+
+```csharp
+// Register a handler in C#
+window.Externo.RegisterHandler("myMethod", async (jsonArgs) =>
+{
+    // Process and return JSON
+    return System.Text.Json.JsonSerializer.Serialize(new { result = "ok" });
+});
+```
+
+```javascript
+// Call it from JavaScript
+const response = await window.WebDesktop.invoke("myMethod", { key: "value" });
+```
+
+### Native dialogs
+
+Built-in dialog handlers are available from JavaScript:
+
+```javascript
+// Message box
+const msg = await window.WebDesktop.invoke("__dialog.showMessage", {
+    text: "File saved successfully",
+    caption: "Success",
+    buttons: "OK",
+    icon: "Info"
+});
+
+// Open file dialog
+const file = await window.WebDesktop.invoke("__dialog.openFile", {
+    filter: "Text files (*.txt)|*.txt|All files (*.*)|*.*",
+    multi: false
+});
+
+// Save file dialog
+const save = await window.WebDesktop.invoke("__dialog.saveFile", {
+    filter: "PDF files (*.pdf)|*.pdf",
+    defaultName: "document.pdf"
+});
+
+// Folder selection dialog
+const folder = await window.WebDesktop.invoke("__dialog.selectFolder", {});
+```
+
+### System tray
+
+```csharp
+window.EnableTrayIcon("My Application", "app.ico");
+```
+
+### Menu bar
+
+```csharp
+window.AddMenu("File");
+var fileMenu = (ToolStripMenuItem)window.MainMenuStrip.Items[0];
+window.AddMenuItem(fileMenu, "Open", (_, _) => { /* handle click */ });
+window.AddMenuItem(fileMenu, "Exit", (_, _) => Application.Exit());
+```
+
+## Examples
+
+Two example applications are included:
+
+- **FileCompressor**: A file compression tool using System.IO.Compression with a web frontend.
+- **TestApp**: A task management application with SQLite database and CRUD operations.
+
+To run an example:
 
 ```bash
-dotnet test WebDesktop.Core.Tests/WebDesktop.Core.Tests.csproj
+cd FileCompressor
+dotnet run
 ```
 
----
+## Building
 
-## 📄 Licencia
+```bash
+dotnet build
+```
 
-MIT
+## Running Tests
+
+```bash
+dotnet test
+```
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
