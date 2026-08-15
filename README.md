@@ -1,6 +1,6 @@
 # WebDesktop
 
-WebDesktop is a .NET framework for building Windows desktop applications using web technologies (HTML, CSS, and JavaScript). It wraps the WebView2 control and provides a bidirectional communication bridge between C# and JavaScript.
+WebDesktop is a lightweight .NET framework for building Windows desktop applications using web technologies (HTML, CSS, and JavaScript). It wraps the WebView2 control and provides a bidirectional communication bridge between C# and JavaScript.
 
 ## Features
 
