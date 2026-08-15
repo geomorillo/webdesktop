@@ -99,6 +99,7 @@ WebDesktop/
 │   └── wwwroot/                  # Static frontend files
 ├── TestApp/                      # Example: task manager application
 │   └── wwwroot/                  # Static frontend files
+├── screenshots/                  # Screenshots of the example applications
 └── WebDesktop.sln                # Visual Studio solution file
 ```
 
@@ -191,11 +192,19 @@ window.AddMenuItem(fileMenu, "Exit", (_, _) => Application.Exit());
 
 ## Examples
 
-Two example applications are included:
+Three example applications are included:
+
+- **CalculatorApp**: A calculator whose UI is web and whose engine runs in C# through the bridge (supports + - * / %, parentheses and unary minus).
+
+  <img src="screenshots/calculator.png" alt="CalculatorApp" width="420">
 
 - **FileCompressor**: A file compression tool using System.IO.Compression with a web frontend.
-- **CalculatorApp**: A calculator whose UI is web and whose engine runs in C# through the bridge (supports + - * / %, parentheses and unary minus).
+
+  <img src="screenshots/filecompressor.png" alt="FileCompressor" width="420">
+
 - **TestApp**: A task management application with SQLite database and CRUD operations.
+
+  <img src="screenshots/testapp.png" alt="TestApp" width="420">
 
 To run an example:
 
