@@ -206,25 +206,11 @@ Three example applications are included:
 
   <img src="screenshots/testapp.png" alt="TestApp" width="420">
 
-To run an example:
-
-```bash
-cd FileCompressor
-dotnet run
-```
-
-## Building
-
-```bash
-dotnet build
-```
-
-## Running Tests
-
-```bash
-dotnet test
-```
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+MIT License
+
+Copyright (c) 2026 Manuel Jhobanny Morillo Ordoñez
+
+See the [LICENSE](LICENSE) file for the full license text.
