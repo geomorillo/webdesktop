@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Ejemplo</title>
+  <link rel="stylesheet" href="http://app.local/css/app.css?v=2">
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>Calculadora</h1>
+      <p>UI web + motor C# a través del puente WebDesktop</p>
+    </header>
+
+    <div class="calc">
+      <div class="display" id="display">0</div>
+      <div class="keys">
+        <button class="key key-fn" onclick="clearAll()">C</button>
+        <button class="key key-fn" onclick="backspace()">&#9003;</button>
+        <button class="key key-fn" onclick="toggleSign()">&#177;</button>
+        <button class="key key-op" onclick="inputOperator('/')">&divide;</button>
+
+        <button class="key" onclick="inputDigit('7')">7</button>
+        <button class="key" onclick="inputDigit('8')">8</button>
+        <button class="key" onclick="inputDigit('9')">9</button>
+        <button class="key key-op" onclick="inputOperator('*')">&times;</button>
+
+        <button class="key" onclick="inputDigit('4')">4</button>
+        <button class="key" onclick="inputDigit('5')">5</button>
+        <button class="key" onclick="inputDigit('6')">6</button>
+        <button class="key key-op" onclick="inputOperator('-')">&minus;</button>
+
+        <button class="key" onclick="inputDigit('1')">1</button>
+        <button class="key" onclick="inputDigit('2')">2</button>
+        <button class="key" onclick="inputDigit('3')">3</button>
+        <button class="key key-op" onclick="inputOperator('+')">+</button>
+
+        <button class="key key-paren" onclick="inputParen('(')">(</button>
+        <button class="key key-paren" onclick="inputParen(')')">)</button>
+        <button class="key" onclick="inputDigit('0')">0</button>
+        <button class="key" onclick="inputDot()">.</button>
+        <button class="key key-eq key-eq-wide" onclick="evaluar()">=</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="http://app.local/js/app.js?v=2"></script>
+</body>
+</html>

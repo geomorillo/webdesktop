@@ -94,6 +94,9 @@ WebDesktop/
 │   │   ├── FileInfoService.cs
 │   │   └── ResponseHelper.cs
 │   └── wwwroot/                  # Static frontend files
+├── CalculatorApp/                # Example: calculator application
+│   ├── Calculadora.cs            # C# evaluation engine (recursive descent parser)
+│   └── wwwroot/                  # Static frontend files
 ├── TestApp/                      # Example: task manager application
 │   └── wwwroot/                  # Static frontend files
 └── WebDesktop.sln                # Visual Studio solution file
@@ -191,6 +194,7 @@ window.AddMenuItem(fileMenu, "Exit", (_, _) => Application.Exit());
 Two example applications are included:
 
 - **FileCompressor**: A file compression tool using System.IO.Compression with a web frontend.
+- **CalculatorApp**: A calculator whose UI is web and whose engine runs in C# through the bridge (supports + - * / %, parentheses and unary minus).
 - **TestApp**: A task management application with SQLite database and CRUD operations.
 
 To run an example:
