@@ -194,7 +194,7 @@ window.AddMenuItem(fileMenu, "Exit", (_, _) => Application.Exit());
 
 Three example applications are included:
 
-- **CalculatorApp**: A calculator whose UI is web and whose engine runs in C# through the bridge (supports + - * / %, parentheses and unary minus).
+- **CalculatorApp**: A calculator whose UI is web and whose engine runs in C# through the bridge (supports + - * / , parentheses and unary minus).
 
   <img src="screenshots/calculator.png" alt="CalculatorApp" width="420">
 
